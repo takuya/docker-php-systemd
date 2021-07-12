@@ -1,0 +1,58 @@
+FROM ubuntu:18.04
+
+
+RUN echo Apt設定 \
+  && echo 'Acquire::HTTPS::Proxy "true";' >> /etc/apt/apt.conf.d/01proxy \
+  && echo 'APT::Install-Recommends 0;'    >> /etc/apt/apt.conf.d/01norecommends \
+  && echo 'APT::Install-Suggests 0;'      >> /etc/apt/apt.conf.d/01norecommends \
+  && echo 'Acquire::ForceIPv4 "true";'    >> /etc/apt/apt.conf.d/99force-ipv4 \
+  ;
+  # && sed -i.bak  -s 's%http://archive.ubuntu.com/ubuntu/%http://ftp.jaist.ac.jp/pub/Linux/ubuntu/%g'  /etc/apt/sources.list  \
+  # && sed -i.bak  -s 's%http://security.ubuntu.com/ubuntu/%http://ftp.jaist.ac.jp/pub/Linux/ubuntu/%g'  /etc/apt/sources.list  \
+  # ;
+
+
+
+
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  init \
+  apache2 \
+  \
+  php-apcu \
+  php-bcmath \
+  php-bz2 \
+  php-curl \
+  php-gmp \
+  php-imagick \
+  php-intl \
+  php-mbstring \
+  php-mysql \
+  php-opcache \
+  php-sqlite3 \
+  php-ssh2 \
+  php-tidy \
+  php-xsl \
+  php-yaml \
+  php-zip \
+  php-gd \
+  libapache2-mod-php \
+  \
+  openssh-server \
+  mysql-server\
+  curl \
+  ;
+
+ENV TZ=Asia/Tokyo
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
+    ;
+
+
+EXPOSE 80/tcp
+EXPOSE 22/tcp
+EXPOSE 3306/tcp
+VOLUME ["/var/www/html"]
+VOLUME ["/var/lib/mysql"]
+
+ENTRYPOINT ["/sbin/init"]
