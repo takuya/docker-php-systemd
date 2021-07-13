@@ -36,7 +36,7 @@ you must re-initialize mysql
 ```shell
 NAME=myapp
 docker exec -it $(docker ps -q --filter name=$NAME)  mysqld --initialize
-docker exec -it $(docker ps -q --filter name=$NAME)  'cat /var/log/mysql/error.log  | grep -i pass'
+docker exec -it $(docker ps -q --filter name=$NAME)  cat /var/log/mysql/error.log  | grep -i pass
 docker exec -it $(docker ps -q --filter name=$NAME)  mysql -p 
 ```
 ```sql
